@@ -1,6 +1,11 @@
-import sys
-sys.path.insert(0, '/home/Christian/Modelado/Proyecto-1/src')
-from Cliente import Cliente
+if __name__ == '__main__':
+    if __package__ is None:
+        import sys
+        from os import path
+        sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
+        from src.Cliente import Cliente
+    else:
+        from ..src.Cliente import Cliente
 import unittest
 import socket
 import threading

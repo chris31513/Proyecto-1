@@ -23,7 +23,4 @@ class Server:
         recibido = self.crea_socket().recv(1024)
         self.conecta().send("Hola")
         return recibido
-def main():
-    servidor = Server()
-    servidor.conecta()
-main()
+
