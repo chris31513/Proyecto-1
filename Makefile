@@ -8,9 +8,11 @@ run_cliente: test_cliente
 	mkdir trash
 	mv src/*.pyc trash
 clean:
+	mkdir trash
+	mv src/*.pyc trash
 	rm -r trash
 test_cliente:
-	python test/TestCliente.py
+	python3.7 test/TestCliente.py
 test_servidor:
 	python test/TestServer.py
 
