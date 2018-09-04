@@ -12,7 +12,7 @@ clean:
 	mv src/*.pyc trash
 	rm -r trash
 test_cliente:
-	python3.7 test/TestCliente.py
+	python test/TestCliente.py
 test_servidor:
 	python test/TestServer.py
 
