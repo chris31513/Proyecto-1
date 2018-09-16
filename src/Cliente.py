@@ -5,32 +5,28 @@ import sys
 import pickle
 import os
 import codecs
+from Eventos import Eventos
+import time
 reload(sys)
 sys.setdefaultencoding('utf-8')
 class Cliente(object):
-    def __init__(self, nombre):
-        self.nombre = nombre
+    def estado(self,msg):
+        self.est = msg
+    def nombre(self,msg):
+        self.nombre = msg
     def crea_socket(self):
         self.sock = socket.socket()
     def conecta(self, tupla):
         self.sock.connect(tupla)
-        self.sock.send(bytearray(self.nombre, "utf8"))
     def envia_mensaje(self, msg):
         try:
             m = bytearray(msg,"utf8")
+            self.sock.send(m)
         except:
             print("Mensaje no valido")
-        usuario = bytearray(self.nombre, "utf8")
-        self.sock.send(usuario)
-        self.sock.send(m)
     def recibe_mensaje(self):
-        while True:
-            usuario = self.sock.recv(1024).decode('utf-8')
-            mensaje = self.sock.recv(1024).decode('utf-8')
-            if usuario == self.nombre:
-                print("Tú has escrito" + " " + mensaje)
-            print(usuario + "dice:" + " " + mensaje)
-            
+        mensaje = self.sock.recv(1024).decode('utf-8')
+        return mensaje
     
 def main():
     try:
@@ -44,30 +40,88 @@ def main():
     except:
         print("Estas haciendo algo mal, por favor verifica que tu dirección y tu puerto sean válidos.")
         sys.exit()
-    try:
-        print("Usuario:")
-        usuario = raw_input()
-        if usuario == None or usuario == "":
-            raise ValueError()
-        cliente = Cliente(usuario)
-    except:
-        print("Usuario no valido")
-        sys.exit()
+    cliente = Cliente()
     try:
         cliente.crea_socket()
         cliente.conecta((ip,puerto))
     except:
         print("Conexión rechazada por el host")
         sys.exit()
-    mientras = True
-    while mientras:
-        print("->")
-        mensaje = raw_input()
-        hilo_mensaje = threading.Thread(cliente.envia_mensaje(mensaje)).start()
-        hilo_recibe = threading.Thread(cliente.recibe_mensaje()).start()
-        if mensaje == "exit":
-            hilo_mensaje.join()
-            hilo_recibe.join()
-            mientras = False
-    sys.exit()
+    ctrl = True
+    while ctrl:
+        eventos = Eventos()
+        instruccion = raw_input()
+        try:
+            instrucciones = instruccion.split(" ", 1)
+            if len(instrucciones) == 0:
+                raise ValueError
+            evento = eventos.get_evento(instrucciones.pop(0))
+            cliente.envia_mensaje(evento)
+            if evento == eventos.IDENTIFY:
+                if len(instrucciones) == 0 or len(instrucciones) > 1:
+                    raise ValueError
+                cliente.nombre(instrucciones[0])
+                cliente.envia_mensaje(instrucciones.pop(0))
+            if evento == eventos.STATUS:
+                if len(instrucciones) == 0 or len(instrucciones) > 1:
+                    raise ValueError
+                cliente.estado(instrucciones[0])
+                cliente.envia_mensaje(instrucciones.pop(0))
+            if evento == eventos.MESSAGE:
+                if len(instrucciones) == 0:
+                    raise ValueError
+                nueva_ints = instrucciones.pop(0).split(" ", 1)
+                s = nueva_ints[0] + " " + nueva_ints[1]
+                cliente.envia_mensaje(s)
+                nueva_ints.clear()
+            if evento == eventos.PUBLICMESSAGE:
+                if len(instrucciones) == 0:
+                    raise ValueError
+                cliente.envia_mensaje(instrucciones.pop(0))
+            if evento == eventos.CREATEROOM:
+                if len(instrucciones) == 0:
+                    raise ValueError
+                cliente.envia_mensaje(instrucciones.pop(0))
+            if evento == eventos.INVITE:
+                if len(instrucciones) == 0:
+                    raise ValueError
+                cuarto = instrucciones.pop(0).split(" ", 1)
+                usuarios = new_inst.pop(1).split()
+                for usuario in usuarios:
+                    cliente.envia_mensaje(cuarto[0])
+                    cliente.envia_mensaje(usuario)
+                new_inst.clear()
+                usuarios.clear()
+            if evento == eventos.JOINROOM:
+                if len(instrucciones) == 0:
+                    raise ValueError
+                cliente.envia_mensaje(instrucciones.pop(0))
+            if evento == eventos.ROOMESSAGE:
+                if len(instrucciones) == 0:
+                    raise ValueError
+                new_inst = instrucciones.pop(0).split(" ", 1)
+                cliente.envia_mensaje(new_inst.pop(0))
+                clience.envia_mensaje(new_inst.pop(0))
+            if evento == eventos.DISCONECT:
+                ctrl = False
+                sys.exit()
+                cliente.sock.close()
+                
+        except:
+            print('Evento Incorrecto')
+        try:
+            instrucciones_server = cliente.recibe_mensaje().split(" ", 1)
+            evento = Eventos.get_evento(instrucciones_server.pop(0))
+            if evento == Eventos.USERS:
+                if len(instrucciones_server) != 0:
+                    raise ValueError
+                print(instrucciones_server.pop(0))
+                if evento == Eventos.MESSAGE:
+                    print(cliente.recibe_mensaje())
+                    if evento == Eventos.PUBLICMESSAGE:
+                        print(cliente.recibe_mensaje())
+                        if evento == Eventos.ROOMESSAGE:
+                            print(cliente.recibe_mensaje())
+        except:
+            sys.exit()
 main()
