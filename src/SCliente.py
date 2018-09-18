@@ -5,9 +5,9 @@ class SCliente(object):
         self.ip = ip
         self.nombre = ""
         self.estado = ""
-    def set_nombre(nombre):
+    def set_nombre(self,nombre):
         self.nombre = nombre
-    def set_estado(estado):
+    def set_estado(self,estado):
         self.estado = estado
     def get_socket(self):
         return self.socket
