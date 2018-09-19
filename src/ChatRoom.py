@@ -1,16 +1,19 @@
-
+# -*- coding: utf-8 -*-
 class ChatRoom(object):
-
-    def __init__(self,nombre,dueño):
+    def __init__(self,nombre,d):
         self.nombre = nombre
-        self.dueño = dueño
+        self.due = d
         self.invitaciones = []
         self.clientes = []
-        self.clientes.append(dueño)
-    def get_dueño(self):
-        return self.dueño
+        self.clientes.append(self.due)
+    def get_due(self):
+        return self.due
     def get_miembros(self):
         return self.clientes
+    def get_nombre(self):
+        return self.nombre
+    def get_invitaciones(self):
+        return self.invitaciones
     def joinr(self, nombre, cliente):
         if nombre not in invitaciones:
             raise ValueError

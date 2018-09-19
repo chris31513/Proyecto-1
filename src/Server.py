@@ -6,6 +6,7 @@ import time
 import json
 from SCliente import SCliente
 from Eventos import Eventos
+from ChatRoom import ChatRoom
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -18,6 +19,7 @@ class Server(object):
         self.clientes = []
         self.hilos = []
         self.nombres = []
+        self.cuartos = []
     def conecta(self):
         print("Todo ok")
         conexion,ip = self.socket.accept()
@@ -83,8 +85,12 @@ class Server(object):
                                 i.set_nombre(e.pop(0))
                                 self.nombres.append(i.get_nombre())
                                 print(str(self.nombres))
-                    if e[0] in self.nombres:
-                        self.envia("Nombre ocupdado", cliente)
+                    try:
+                        if len(self.nombres) != 0:
+                            if e[0] in self.nombres:
+                                self.envia("Nombre ocupdado", cliente)
+                    except:
+                        continue
                 if evento == eventos.STATUS:
                     if len(e) != 1:
                         raise ValueError
@@ -100,15 +106,40 @@ class Server(object):
                 if evento == eventos.USERS:
                     self.envia(str(self.nombres), cliente)
                 if evento == eventos.PUBLICMESSAGE:
-                    print(e[0])
-                    self.envia_publico(e.pop(0), ip)
+                        print(e[0])
+                        self.envia_publico(e.pop(0), ip)
+                if evento == eventos.CREATEROOM:
+                    for i in self.clientes:
+                        if ip == i.get_ip():
+                            nombre = i.get_nombre()
+                    cuarto = ChatRoom(e.pop(0),nombre)
+                    self.cuartos.append(cuarto)
+                if evento == eventos.INVITE:
+                    new_int = e.pop(0).split(" ",1)
+                    cuarto = new_int.pop(0)
+                    usuarios = new_int.pop(0).split()
+                    for r in self.clientes:
+                        if ip == r.get_ip():
+                            nombre = r.get_nombre()
+                    for i in self.cuartos:
+                        if i.get_nombre() == cuarto: 
+                            if nombre == i.get_due():
+                                for usuario in usuarios:
+                                    print("listo")
+                                    i.invita(usuario)
+                                    self.envia_privado(usuario,"Te he invitado al cuarto " + cuarto, nombre)
+                                    print(i.get_invitaciones())
+                if evento == eventos.
                 if evento == eventos.DISCONNECT:
                     for i in self.clientes:
                         if i.get_ip() == ip:
+                            for n in self.nombres:
+                                if i.get_nombre() == n:
+                                    d = self.nombres.index(n)
+                                    self.nombres.pop(d)
                             t = self.clientes.index(i)
                             self.clientes.pop(t)
                             i.get_socket().close()
                             raise ValueError
             except:
                 continue
-                print("ño")
