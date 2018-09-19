@@ -112,7 +112,7 @@ class Server(object):
                     for i in self.clientes:
                         if ip == i.get_ip():
                             nombre = i.get_nombre()
-                    cuarto = ChatRoom(e.pop(0),nombre)
+                    cuarto = ChatRoom(e.pop(0),nombre, cliente)
                     self.cuartos.append(cuarto)
                 if evento == eventos.INVITE:
                     new_int = e.pop(0).split(" ",1)
@@ -129,7 +129,18 @@ class Server(object):
                                     i.invita(usuario)
                                     self.envia_privado(usuario,"Te he invitado al cuarto " + cuarto, nombre)
                                     print(i.get_invitaciones())
-                if evento == eventos.
+                if evento == eventos.JOINROOM:
+                    try:
+                        cuarto = e.pop(0)
+                        for i in self.cuartos:
+                            if cuarto == i.get_nombre():
+                                for i in self.clientes:
+                                    if ip == i.get_ip():
+                                        nombre = i.get_nombre()
+                                print("Listo")
+                                i.joinr(nombre,cliente)
+                    except:
+                        self.envia("No estás invitado", cliente)
                 if evento == eventos.DISCONNECT:
                     for i in self.clientes:
                         if i.get_ip() == ip:
