@@ -10,7 +10,7 @@ class Eventos(object):
     INVITE = 'INVITE'
     JOINROOM = 'JOINROOM'
     ROOMESSAGE = 'ROOMESSAGE'
-    DISCONECT = 'DISCONECT'
+    DISCONNECT = 'DISCONNECT'
     def get_evento(self,msg):
         if msg == 'IDENTIFY':
             return self.IDENTIFY
@@ -30,6 +30,6 @@ class Eventos(object):
             return self.JOINROOM
         if msg == 'ROOMESSAGE':
             return self.ROOMESSAGE
-        if msg == 'DISCONECT':
-            return self.DISCONECT
+        if msg == 'DISCONNECT':
+            return self.DISCONNECT
         raise ValueError

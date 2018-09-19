@@ -14,10 +14,10 @@ class Server(object):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind(tupla)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.listen(1)
-        self.ctrl = True
+        self.socket.listen(1000)
         self.clientes = []
         self.hilos = []
+        self.nombres = []
     def conecta(self):
         print("Todo ok")
         conexion,ip = self.socket.accept()
@@ -38,18 +38,27 @@ class Server(object):
         self.ctrl = False
         sys.exit()
 
-    def envia_publico(self,mensaje):
+    def envia_publico(self,mensaje, ip):
+        print(mensaje)
         for cliente in self.clientes:
-            cliente.send(bytes(mensaje).encode('UTF-8'))
+            for i in self.clientes:
+                if ip == i.get_ip():
+                    nombre = i.get_nombre()
+            s = nombre + ": " + mensaje
+            m = s.encode('UTF-8')
+            cliente.get_socket().send(s.encode('UTF-8'))
 
     def envia_privado(self,usuario,mensaje,nombre):
         for cliente in self.clientes:
             if usuario == cliente.get_nombre():
                 s = nombre + ": " + mensaje
-                cliente.get_socket.send(bytes(s).encode('UTF-8'))
+                cliente.get_socket().send(s.encode('UTF-8'))
+    def obtiene_nombre(self,ip):
+        for cliente in self.clientes:
+            if ip == cliente.get_ip():
+                return cliente.get_nombre()
     def envia(self,msg,cliente):
-        print(msg)
-        cliente.send(bytes(msg).encode('UTF-8'))
+        cliente.send(msg.encode('UTF-8'))
     def get_lista(self):
         lista = []
         for cliente in self.clientes:
@@ -60,18 +69,22 @@ class Server(object):
         eventos = Eventos()
         while True:
             try:
-                m = cliente.recv(1024).encode('UTF-8')
-                print(m)
+                r = cliente.recv(1024).encode('UTF-8')
+                m = r.rstrip()
                 e = m.split(" ",1)
-                print(e)
                 evento = eventos.get_evento(e.pop(0))
+                print(evento)
                 if evento == eventos.IDENTIFY:
                     if len(e) != 1:
                         raise ValueError
                     for i in self.clientes:
                         if ip == i.get_ip():
-                            i.set_nombre(e.pop(0))
-                            print(i.get_nombre())
+                            if not e[0] in self.nombres:      
+                                i.set_nombre(e.pop(0))
+                                self.nombres.append(i.get_nombre())
+                                print(str(self.nombres))
+                    if e[0] in self.nombres:
+                        self.envia("Nombre ocupdado", cliente)
                 if evento == eventos.STATUS:
                     if len(e) != 1:
                         raise ValueError
@@ -79,19 +92,23 @@ class Server(object):
                         if ip == i.get_ip():
                             i.set_estado(e.pop(0))
                 if evento == eventos.MESSAGE:
-                    if len(e) != 1:
-                        raise ValueError
-                    m = e.split(" ", 1)
-                    usuario = m.pop(0)
-                    mensaje = m.pop(0)
-                    for i in self.clientes:
-                        if ip == i.get_ip():
-                            nombre = i.get_nombre()
+                    z = e.pop(0).split(" ", 1)
+                    usuario = z.pop(0)
+                    mensaje = z.pop(0)
+                    nombre = self.obtiene_nombre(ip)
                     self.envia_privado(usuario,mensaje,nombre)
                 if evento == eventos.USERS:
-                    s = ""
+                    self.envia(str(self.nombres), cliente)
+                if evento == eventos.PUBLICMESSAGE:
+                    print(e[0])
+                    self.envia_publico(e.pop(0), ip)
+                if evento == eventos.DISCONNECT:
                     for i in self.clientes:
-                        s = s + " " + i.get_nombre()
-                    self.envia(s,cliente)
-            except ValueError:
+                        if i.get_ip() == ip:
+                            t = self.clientes.index(i)
+                            self.clientes.pop(t)
+                            i.get_socket().close()
+                            raise ValueError
+            except:
+                continue
                 print("ño")

@@ -2,6 +2,7 @@
 from Server import Server
 from Eventos import Eventos
 import threading
+import sys
 def main():
     try:
         try:
@@ -18,6 +19,6 @@ def main():
         server = Server()
         server.crea_server((ip, puerto))
         server.conecta()
-    except:
+    except KeyboardInterrupt:
         sys.exit()
 main()

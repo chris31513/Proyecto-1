@@ -2,7 +2,8 @@
 from Cliente import Cliente
 from Eventos import Eventos
 import threading
-import pickle
+import sys
+from select import *
 def main():
         try:
             print("Direccion:")
@@ -17,14 +18,23 @@ def main():
             sys.exit()
         cliente = Cliente()
         try:
-            cliente.crea_socket()
-            cliente.conecta((ip,puerto))
+                cliente.crea_socket()
+                cliente.conecta((ip,puerto))
         except:
             print("Conexión rechazada por el host")
             sys.exit()
-        ctrl = True
         eventos = Eventos()
-        while ctrl:
-            instruccion = raw_input()
-            cliente.maneja_evento(instruccion)
+        while True:
+                try:
+                        m = cliente.recibe_mensaje()
+                        print(m + "\n")
+                except:
+                        pass
+                timeout = 0.05
+                rlist, _, _ = select([sys.stdin], [], [], timeout)
+                if rlist:
+                        instruccion = sys.stdin.readline()
+                else:
+                        continue
+                cliente.maneja_evento(instruccion)
 main()
