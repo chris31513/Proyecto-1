@@ -61,6 +61,9 @@ class Server(object):
                 return cliente.get_nombre()
     def envia(self,msg,cliente):
         cliente.send(msg.encode('UTF-8'))
+    def envia_cuarto(self,msg,cliente,nombre):
+        s = nombre + ": " + msg
+        cliente.send(s.encode('UTF-8'))
     def get_lista(self):
         lista = []
         for cliente in self.clientes:
@@ -134,13 +137,24 @@ class Server(object):
                         cuarto = e.pop(0)
                         for i in self.cuartos:
                             if cuarto == i.get_nombre():
-                                for i in self.clientes:
-                                    if ip == i.get_ip():
-                                        nombre = i.get_nombre()
+                                for r in self.clientes:
+                                    if ip == r.get_ip():
+                                        nombre = r.get_nombre()
                                 print("Listo")
                                 i.joinr(nombre,cliente)
-                    except:
+                    except ValueError:
                         self.envia("No estás invitado", cliente)
+                if evento == eventos.ROOMESSAGE:
+                    q = e.pop(0).rstrip().split(" ",1)
+                    for i in self.clientes:
+                        if ip == i.get_ip():
+                            nombre = i.get_nombre()
+                    for r in self.cuartos:
+                        if q.pop(0) == r.get_nombre():
+                            m = r.get_miembros()
+                    for a in m:
+                        self.envia_cuarto(q[0],a,nombre)
+                    q.pop(0)
                 if evento == eventos.DISCONNECT:
                     for i in self.clientes:
                         if i.get_ip() == ip:
