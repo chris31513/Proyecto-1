@@ -1,0 +1,8 @@
+from Tkinter import *
+
+class GUI():
+    def __init__(self,master,control):
+        self.master = master
+        self.control = control
+        b = Button(master, text= "Hello",command = control.action())
+        b.pack()
