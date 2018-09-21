@@ -15,8 +15,22 @@ class Controlador(object):
         GUI(master,self)
         self.cliente = Cliente()
         self.cliente.crea_socket()
-    def action(self):
-        self.cliente.conecta(("localhost",1234))
+    def action(self,tupla):
+        self.cliente.conecta(tupla)
+    def recibe(self):
+        while True:
+            try:
+                self.cliente.recibe_mensaje()
+            except:
+                pass
+    def envia(self,e):
+        r = e.get()
+        s = "PUBLICMESSAGE " + r + "\n"
+        self.cliente.maneja_evento(s)
+    def identify(self,e):
+        nombre = e.get()
+        s = "IDENTIFY " + nombre + "\n"
+        self.cliente.maneja_evento(s)
 def main():
     raiz = Tk()
     controlador = Controlador()

@@ -31,7 +31,7 @@ class Cliente(object):
             print("Mensaje no valido")
     def recibe_mensaje(self):
         try:
-            mensaje = self.sock.recv(1024).decode('UTF-8')
+            mensaje = self.sock.recv(1024).encode('UTF-8')
             return mensaje
         except socket.timeout:
             raise ValueError
