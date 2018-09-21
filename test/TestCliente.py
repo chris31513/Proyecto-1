@@ -6,70 +6,47 @@ if __name__ == '__main__':
         from src.Cliente import Cliente
     else:
         from ..src.Cliente import Cliente
+
 import unittest
 import socket
 import threading
-import time
 import sys
-import pickle
 
-class Server(object):
-    def __init__(self):
-        self.clientes = []
-        self.host = host
-        self.port = port
-        self.sock = socket.socket()
-        hilo1 = threading.Thread(target = self.recibe_mensajes())
-        hilo1.daemon = True
-    def prepara_coneccion(self):
-        self.sock.bind("localhost", 8000)
-        self.sock.listen(100000)
-    def conecta(self):
-        while True:
-            conn, ip = self.sock.accept()
-            self.clientes.append(conn)
-    def mensaje_a_todos(self,msg):
-        for cliente in self.clientes:
-            try:
-                cliente.send(msg)
-            except:
-                clientes.remove(cliente)
-    def recibe_mensajes(self):
-        while True:
-            if len(self.clientes) > 0:
-                for c in self.clientes:
-                    try:
-                        mensaje = c.recv(1024)
-                        if mensaje:
-                            self.mensaje_a_todos(mensaje)
-                    except:
-                        pass
-    def desconecta(self):
-        self.sock.close()
-        sys.exit()
-class Cliente2:
-    def crea_socket(self):
-        self.sock = socket.socket()
-    def conecta(self):
-        self.sock.connect("localhost", 8000)
-    def recibe_mensaje(self):
-        while True:
-            mensaje = self.sock.recv(1024)
-            if mensaje:
-                return mensaje
-    def desconecta(self):
-        self.sock.close()
-        sys.exit()
 class TestCliente(unittest.TestCase):
+    def runnable(self):
+        self.conexion, ip = self.sock.accept()
+    def setUp(self):
+        self.sock = socket.socket()
+        self.sock.bind(("0.0.0.0",8000))
+        self.sock.listen(0)
+        try:
+            threading.Thread(target = self.runnable).start()
+        except:
+            self.assertTrue(False)
     def test_conecta(self):
-        servidor = Server()
-        servidor.prepara_coneccion()
-        hilo1 = threading.Thread(target = servidor.conecta())
-        hilo1.daemon = True
-        hilo1.start()
-        hilo2 = threading.Thread(target = cliente.conecta())
-        hilo2.deamon = 
-        
+        cliente = Cliente()
+        cliente.crea_socket()
+        cliente.conecta(("localhost",8000))
+        self.assertTrue(cliente.is_conectado())
+        self.desconecta()
+    def desconecta(self):
+        self.sock.close()
+    def test_recibe(self):
+        cliente = Cliente()
+        cliente.crea_socket()
+        cliente.conecta(("localhost",8000))
+        m = "Hola" 
+        s = m.encode('UTF-8')
+        self.conexion.send(s)
+        self.assertEquals("Hola", cliente.recibe_mensaje())
+        self.desconecta()
+    def test_envia(self):
+        cliente = Cliente()
+        cliente.crea_socket()
+        cliente.conecta(("localhost",8000))
+        cliente.maneja_evento("IDENTIFY yo" + "\n")
+        self.assertEquals("IDENTIFY yo", self.conexion.recv(1024).encode('UTF-8'))
+        self.desconecta()
         
 
 if __name__ == '__main__':

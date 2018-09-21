@@ -2,23 +2,20 @@
 from Server import Server
 from Eventos import Eventos
 import threading
-import sys
+import os
 def main():
     try:
         try:
-            print("Dirección:")
-            ip = raw_input()
-            if ip == "" or ip == None:
-                raise ValueError()
             print("Puerto:")
             p = raw_input()
             puerto = int(p)
         except:
-            print("Dirección o puerto no validos")
+            print("Puerto inválido")
             sys.exit()
         server = Server()
-        server.crea_server((ip, puerto))
+        server.crea_server(puerto)
         server.conecta()
+        
     except KeyboardInterrupt:
-        sys.exit()
+        server.desconecta()
 main()

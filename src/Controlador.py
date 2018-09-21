@@ -18,11 +18,7 @@ class Controlador(object):
     def action(self,tupla):
         self.cliente.conecta(tupla)
     def recibe(self):
-        while True:
-            try:
-                self.cliente.recibe_mensaje()
-            except:
-                pass
+        self.cliente.recibe_mensaje()
     def envia(self,e):
         r = e.get()
         s = "PUBLICMESSAGE " + r + "\n"

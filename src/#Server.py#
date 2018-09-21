@@ -67,8 +67,6 @@ class Server(object):
     def envia_cuarto(self,msg,cliente,nombre):
         s = nombre + ": " + msg
         cliente.send(s.encode('UTF-8'))
-    def get_conexion(self, conexion):
-        return conexion
     def get_lista(self):
         lista = []
         for cliente in self.clientes:

@@ -20,6 +20,9 @@ class Cliente(object):
         self.sock.settimeout(1)
     def conecta(self, tupla):
         self.sock.connect(tupla)
+        self.conectado = True
+    def is_conectado(self):
+        return self.conectado
     def envia_mensaje(self, msg):
         try:
             m = msg.rstrip().encode('UTF-8')
@@ -28,7 +31,7 @@ class Cliente(object):
             except socket.timeout:
                 self.sock.send(m)
         except:
-            print("Mensaje no valido")
+            print("Mensaje inválido")
     def recibe_mensaje(self):
         try:
             mensaje = self.sock.recv(1024).encode('UTF-8')
@@ -48,4 +51,4 @@ class Cliente(object):
             eventos.get_evento(m[0].rstrip())
             self.envia_mensaje(mensaje)
         except ValueError:
-            print("mensaje no valido")
+            print("Mensaje inválido")
