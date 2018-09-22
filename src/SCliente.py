@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #----Clase que encapsula a los clientes
 class SCliente(object):
     #----Constructor del objeto, recibe el socket del cliente y la ip

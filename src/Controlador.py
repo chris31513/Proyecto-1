@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 from Cliente import Cliente
-
 if __name__ == '__main__':
     if __package__ is None:
         import sys

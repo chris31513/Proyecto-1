@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 #----Clase para definir los eventos del protocolo
 class Eventos(object):
     IDENTIFY = 'IDENTIFY'

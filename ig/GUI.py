@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from Tkinter import *
 import tkMessageBox
 #----Clase de la interfaz gráfica
