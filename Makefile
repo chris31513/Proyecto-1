@@ -9,6 +9,9 @@ run_cliente:
 run_interfaz:
 	python2.7 test/Test.py
 	python2.7 src/Controlador.py
+	mkdir trash
+	mv src/*.pyc trash
+	mv ig/*.pyc trash
 clean:
 	rm -r trash
 
