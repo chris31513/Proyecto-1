@@ -36,6 +36,7 @@ class Controlador(object):
 #----Crea la primer ventana de la interfaz
 def main():
     raiz = Tk()
+    raiz.title("Conectar")
     controlador = Controlador()
     controlador.set_controlador(raiz)
     raiz.mainloop()
