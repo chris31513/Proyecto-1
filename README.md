@@ -13,7 +13,7 @@
 
   Recomendaciones:<br />
     Se recomienda instalar python-tk para la interfaz gráfica.<br />
-    Es demasiado recomendable que, después de ejecutar la interfaz gráfica se ejectue el comando:<br />
+    Es demasiado recomendable que, después de ejecutar la interfaz gráfica ó el modo terminal, se ejectue el comando:<br />
       $ make clean
       
   Errores conocidos:<br />
