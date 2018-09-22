@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from Cliente import Cliente
-from Eventos import Eventos
-import threading
 import sys
 from select import *
+#----Función que ejecuta al cliente y lo hace funcionar en la terminal
 def main():
         try:
                 try:
@@ -24,7 +23,6 @@ def main():
                 except:
                         print("Conexión rechazada por el host")
                         sys.exit()
-                eventos = Eventos()
                 while True:
                         try:
                                 m = cliente.recibe_mensaje()

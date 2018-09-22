@@ -1,0 +1,59 @@
+if __name__ == '__main__':
+    if __package__ is None:
+        import sys
+        from os import path
+        sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
+        from src.Cliente import Cliente
+    else:
+        from ..src.Cliente import Cliente
+
+import unittest
+import socket
+import threading
+import sys
+
+class TestCliente(unittest.TestCase):
+    def runnable(self):
+        self.conexion, ip = self.sock.accept()
+    def setUp(self):
+        self.sock = socket.socket()
+        self.sock.bind(("0.0.0.0",8000))
+        self.sock.listen(0)
+        threading.Thread(target = self.runnable).start()
+    def test_conecta(self):
+        cliente = Cliente()
+        cliente.crea_socket()
+        cliente.conecta(("localhost",8000))
+        self.assertTrue(cliente.is_conectado())
+        self.desconecta()
+    def desconecta(self):
+        self.sock.close()
+    def test_recibe(self):
+        cliente = Cliente()
+        cliente.crea_socket()
+        cliente.conecta(("localhost",8000))
+        with self.assertRaises(ValueError):
+            self.assertEquals("Hola",cliente.recibe_mensaje())
+        self.desconecta()
+    def test_desconecta(self):
+        cliente = Cliente()
+        cliente.crea_socket()
+        cliente.conecta(("localhost", 8000))
+        with self.assertRaises(SystemExit):
+            cliente.maneja_evento("DISCONNECT"+"\n")
+        self.desconecta()
+    def test_envia(self):
+        cliente = Cliente()
+        cliente.crea_socket()
+        cliente.conecta(("localhost",8000))
+        cliente.maneja_evento("IDENTIFY yo" + "\n")
+        self.assertEquals("IDENTIFY yo", self.conexion.recv(1024).encode('UTF-8'))
+        self.desconecta()
+        
+
+if __name__ == '__main__':
+    try:
+        suite = unittest.TestLoader().loadTestsFromTestCase(TestCliente)
+    except:
+        pass
+unittest.TextTestRunner(verbosity=2).run(suite)

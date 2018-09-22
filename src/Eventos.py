@@ -1,5 +1,5 @@
-from enum import Enum
 
+#----Clase para definir los eventos del protocolo
 class Eventos(object):
     IDENTIFY = 'IDENTIFY'
     STATUS = 'STATUS'
@@ -11,6 +11,7 @@ class Eventos(object):
     JOINROOM = 'JOINROOM'
     ROOMESSAGE = 'ROOMESSAGE'
     DISCONNECT = 'DISCONNECT'
+    #----Método que devuelve un evento dada una cadena
     def get_evento(self,msg):
         if msg == 'IDENTIFY':
             return self.IDENTIFY

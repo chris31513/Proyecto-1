@@ -1,7 +1,8 @@
 from Tkinter import *
 import tkMessageBox
-
+#----Clase de la interfaz gráfica
 class GUI():
+    #----Método que construye la primer ventana que se muestra
     def __init__(self,master,control):
         self.host = StringVar()
         self.port = StringVar()
@@ -16,12 +17,13 @@ class GUI():
         e.pack()
         r.pack()
         label.pack()
-    
+    #----Método que define el host al que se conectará el cliente
     def e(self,e):
         self.host = e.get()
-        
+    #----Método que define el puerto al que se conectará el cliente
     def r(self,r):
         self.port = r.get()
+    #----Método que abre una nueva ventana para el chat
     def identify(self,e, master):
         try:
             self.control.identify(e)
@@ -42,6 +44,7 @@ class GUI():
             r.mainloop()
         except:
             tkMessageBox.showinfo("Nombre ocupado", "Nombre ocupado")
+    #----Método que llama a <action> del controlador y abre una nueva ventana para que el usuario se identifique
     def conecta(self,host,puerto,master):
         try:
             print(host)

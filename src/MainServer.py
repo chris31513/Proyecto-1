@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from Server import Server
-from Eventos import Eventos
-import threading
-import os
+import sys
+#----Función que ejecuta al servidor y lo hace funcionar en la terminal
 def main():
     try:
         try:
@@ -15,7 +14,6 @@ def main():
         server = Server()
         server.crea_server(puerto)
         server.conecta()
-        
     except KeyboardInterrupt:
         server.desconecta()
 main()
