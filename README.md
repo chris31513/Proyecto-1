@@ -1,6 +1,6 @@
   # Proyecto-1
   Versión:<br />
-    python 2.7<br />
+    python 2.7.15<br />
     <br />
     
   Uso:<br />
